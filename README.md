@@ -12,7 +12,9 @@
   * `keyboard-layout.json`
   * `plate-2026-02-05T17_30_58.558Z.dxf`
 * **Music's Pad Firmware:**
-  * `music-pad-firmware.py`
+  * `music_pad_firmware.py`
+* **Computer Spotify Tracker:**
+  * `spotify_monitor_app.py`
 
 ---
 
