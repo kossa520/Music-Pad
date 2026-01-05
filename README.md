@@ -1,26 +1,29 @@
-Here are all the things you need to create Music Pad!
+##  Project Requirements
 
-File list:
-  PCB design:
-    -Music Pad.kicad_pcb
-    -Music Pad.kicad_sch
-    -Music Pad.kicad_pro
-  Case design:
-    -Bottom.step
-    -Top.step
-  Keyboard layout styles:
-    -keyboard-layout.json
-    -plate-2026-02-05T17_30_58.558Z.dxf
-  Music's Pad firmware:
-    -
+### File List
+* **PCB Design:**
+  * `Music Pad.kicad_pcb`
+  * `Music Pad.kicad_sch`
+  * `Music Pad.kicad_pro`
+* **Case Design:**
+  * `Bottom.step`
+  * `Top.step`
+* **Keyboard Layout Styles:**
+  * `keyboard-layout.json`
+  * `plate-2026-02-05T17_30_58.558Z.dxf`
+* **Music's Pad Firmware:**
+  * *(Firmware file here)*
 
-Part List:
-  -3d printed case (bottom and top file)
-  -M3x5mx4mm heatset inserts x4
-  -M3x16mm screws x4
-  -0.91 inch OLED display (4 pin)
-  -DSA keycaps
-  -Seeed XIAO RP2040
-  -MX-Style switches x3
-  -EC11 Rotary encoder
+---
 
+### Part List
+| Quantity | Item | Notes |
+| :--- | :--- | :--- |
+| 1 | 3D Printed Case | Includes Bottom and Top files |
+| 4 | M3x5mx4mm Heatset Inserts | |
+| 4 | M3x16mm Screws | |
+| 1 | 0.91 inch OLED Display | 4-pin version |
+| 3 | DSA Keycaps | |
+| 1 | Seeed XIAO RP2040 | |
+| 3 | MX-Style Switches | |
+| 1 | EC11 Rotary Encoder | |
