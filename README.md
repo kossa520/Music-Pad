@@ -56,7 +56,7 @@ adafruit_display_text/ (entire folder)
 
 ### 3. Upload Firmware
 
-Copy the code.py firmware to the root of your CIRCUITPY drive
+Copy the music_pad_firmware.py firmware to the root of your CIRCUITPY drive
 The board will automatically restart
 You should see "Music Pad" and "Waiting for Spotify..." on the OLED display
 
@@ -104,7 +104,7 @@ bashpip install pyserial spotipy python-dotenv
 ### 3. Create Project Folder
 
 Create a folder for your Music Pad monitor (e.g., C:\MusicPadMonitor)
-Save the spotify_monitor.py file in this folder
+Save the spotify_monitor_app.py file in this folder
 
 ### 4. Create Configuration File
 Create a file named .env in the same folder with your credentials:
@@ -128,7 +128,7 @@ bash   cd C:\MusicPadMonitor
 
 Run the monitor:
 
-bash   python spotify_monitor.py
+bash   python spotify_monitor_app.py
 ### 3. First Time Setup
 
 The first time you run it, a browser window will open
