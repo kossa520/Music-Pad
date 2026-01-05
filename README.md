@@ -12,7 +12,7 @@
   * `keyboard-layout.json`
   * `plate-2026-02-05T17_30_58.558Z.dxf`
 * **Music's Pad Firmware:**
-  * *(Firmware file here)*
+  * `music-pad-firmware.py`
 
 ---
 
