@@ -1,3 +1,8 @@
+# Music Pad Preview:
+
+<img width="1920" height="1080" alt="preview" src="https://github.com/user-attachments/assets/c0089113-2270-4f60-a92d-5994534260f4" />
+
+
 ##  Project Requirements
 
 ### File List
