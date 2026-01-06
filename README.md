@@ -16,7 +16,6 @@
 * **Keyboard Layout Styles:**
   * `keyboard-layout.json`
   * `plate-2026-02-05T17_30_58.558Z.dxf`
-  * `preview.png`
 * **Music's Pad Firmware:**
   * `music_pad_firmware.py`
 * **Computer Spotify Tracker:**
