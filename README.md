@@ -40,7 +40,7 @@
 
 ### 1. Install CircuitPython
 
-Download CircuitPython for XIAO RP2040 from circuitpython.org
+Download CircuitPython for XIAO RP2040 from [circuitpython.org](https://circuitpython.org/board/seeeduino_xiao_rp2040/)
 Double-press the reset button on your XIAO RP2040 to enter bootloader mode
 A drive named RPI-RP2 will appear
 Copy the downloaded .uf2 file to this drive
