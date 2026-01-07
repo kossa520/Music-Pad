@@ -1,11 +1,23 @@
-# Music Pad Preview:
+# Music Pad Images:
+
+## Preview:
 
 <img width="1920" height="1080" alt="preview" src="https://github.com/user-attachments/assets/c0089113-2270-4f60-a92d-5994534260f4" />
 
+## PCB Schemat:
 
-##  Project Requirements
+<img width="2030" height="1135" alt="image" src="https://github.com/user-attachments/assets/8210e1b6-5645-4bc8-bc43-de4861a928ab" />
+<img width="2223" height="1112" alt="image" src="https://github.com/user-attachments/assets/298fdc92-edcf-4d9f-bddd-4171f73a7c21" />
 
-### File List
+## Case Schemat:
+
+<img width="1878" height="1021" alt="image" src="https://github.com/user-attachments/assets/2e5a57ca-52a7-4bbb-9385-2812084bff3b" />
+<img width="2256" height="1110" alt="image" src="https://github.com/user-attachments/assets/c5b0dd0f-ce2a-48be-9e2e-9ceab03c6849" />
+
+
+#  Project Requirements
+
+## File List
 * **PCB Design:**
   * `Music Pad.kicad_pcb`
   * `Music Pad.kicad_sch`
@@ -22,7 +34,7 @@
 
 ---
 
-### Part List
+## Part List
 | Quantity | Item | Notes |
 | :--- | :--- | :--- |
 | 1 | 3D Printed Case | Includes Bottom and Top files |
