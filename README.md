@@ -29,7 +29,7 @@
   * `keyboard-layout.json`
   * `plate-2026-02-05T17_30_58.558Z.dxf`
 * **Programs:**
-  * `music_pad_firmware.py`
+  * `code.py`
   * `libraries`
 
 ---
@@ -60,15 +60,13 @@ The board will restart and appear as CIRCUITPY
 
 ### 2. Install Required Libraries
 
-Download the CircuitPython library bundle from circuitpython.org/libraries (match your CircuitPython version)
-Extract the bundle
+Download the CircuitPython libraries
 Copy these folders/files to the lib folder on your CIRCUITPY drive:
 
-adafruit_hid/ (entire folder)
-adafruit_displayio_ssd1306.mpy
-adafruit_display_text/ (entire folder)
-
-
+adafruit_hid/
+adafruit_display_text/
+adafruit_framebuf.mpy
+adafruit_ssd1306.mpy
 
 ### 3. Upload Firmware
 
