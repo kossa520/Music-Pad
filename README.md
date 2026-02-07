@@ -30,7 +30,7 @@
   * `plate-2026-02-05T17_30_58.558Z.dxf`
 * **Programs:**
   * `music_pad_firmware.py`
-  * `spotify_monitor_app.py`
+  * `libraries`
 
 ---
 
@@ -74,82 +74,6 @@ adafruit_display_text/ (entire folder)
 
 Copy the music_pad_firmware.py firmware to the root of your CIRCUITPY drive
 The board will automatically restart
-You should see "Music Pad" and "Waiting for Spotify..." on the OLED display
+You should see "Music Pad" and "Loading..." on the OLED display
 
-
-
-
-
-## Part 2: Set Up Spotify API
-### 1. Create Spotify Developer Account
-
-Go to https://developer.spotify.com/dashboard
-Log in with your Spotify account
-Click "Create an App"
-Fill in:
-
-App name: Music Pad Monitor
-App description: Monitors Spotify for Music Pad display
-Accept the terms and click "Create"
-
-
-
-### 2. Get Your Credentials
-
-In your app dashboard, you'll see:
-
-Client ID (copy this)
-Click "Show Client Secret" and copy it
-
-
-Click "Edit Settings"
-Under "Redirect URIs", add: http://localhost:8888/callback
-Click "Add" then "Save"
-
-
-## Part 3: Install Windows Monitor App
-### 1. Install Python
-
-Download Python 3.8+ from python.org
-During installation, check "Add Python to PATH"
-Complete the installation
-
-### 2. Install Required Packages
-Open Command Prompt (cmd) and run:
-bashpip install pyserial spotipy python-dotenv
-### 3. Create Project Folder
-
-Create a folder for your Music Pad monitor (e.g., C:\MusicPadMonitor)
-Save the spotify_monitor_app.py file in this folder
-
-### 4. Create Configuration File
-Create a file named .env in the same folder with your credentials:
-SPOTIPY_CLIENT_ID=your_client_id_here
-SPOTIPY_CLIENT_SECRET=your_client_secret_here
-SPOTIPY_REDIRECT_URI=http://localhost:8888/callback
-Replace your_client_id_here and your_client_secret_here with the values from your Spotify app.
-
-## Part 4: Run the Monitor
-### 1. Connect Your Music Pad
-
-Connect your Music Pad to your computer via USB
-Wait for Windows to recognize the device
-
-### 2. Start the Monitor
-
-Open Command Prompt
-Navigate to your project folder:
-
-bash   cd C:\MusicPadMonitor
-
-Run the monitor:
-
-bash   python spotify_monitor_app.py
-### 3. First Time Setup
-
-The first time you run it, a browser window will open
-Log in to Spotify and authorize the app
-The browser will redirect to a page that may show "can't reach this page" - that's OK!
-Copy the entire URL from the address bar
-Paste it into the Command Prompt when asked
-Press Enter
+## 4. Wait for spotify to unlock the spotify for devs create app button, so i can make app for it.
