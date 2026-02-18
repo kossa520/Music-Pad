@@ -48,7 +48,7 @@ switch3 = digitalio.DigitalInOut(switch3_pin)
 switch3.direction = digitalio.Direction.INPUT
 switch3.pull = digitalio.Pull.UP
 
-# Setup rotary encoder with manual reading (GPIO29 and GPIO1 are not sequential)
+# Setup rotary encoder with manual reading
 encoder_a = digitalio.DigitalInOut(board.D3)  # GPIO29
 encoder_a.direction = digitalio.Direction.INPUT
 encoder_a.pull = digitalio.Pull.UP
@@ -58,7 +58,6 @@ encoder_b.direction = digitalio.Direction.INPUT
 encoder_b.pull = digitalio.Pull.UP
 
 # Setup encoder button
-# Encoder button is on GPIO0 (D6)
 encoder_btn_pin = board.D6  # GPIO0 - Encoder button
 encoder_btn = digitalio.DigitalInOut(encoder_btn_pin)
 encoder_btn.direction = digitalio.Direction.INPUT
@@ -74,37 +73,29 @@ last_b = encoder_b.value
 encoder_position = 0
 encoder_state = 0
 last_encoder_time = 0
-encoder_debounce = 0.01  # 10ms debounce for encoder
+encoder_debounce = 0.01
 
 def read_encoder():
-    """Read encoder rotation using improved gray code with debouncing"""
     global last_a, last_b, encoder_position, encoder_state, last_encoder_time
 
     current_time = time.monotonic()
 
-    # Debounce - ignore changes that happen too fast
     if current_time - last_encoder_time < encoder_debounce:
         return encoder_position
 
     a = encoder_a.value
     b = encoder_b.value
 
-    # Only process on actual transitions
     if a == last_a and b == last_b:
         return encoder_position
 
-    # Update timestamp
     last_encoder_time = current_time
 
-    # Create state from current and previous readings
-    # This gives us a 4-bit number that uniquely identifies each transition
     current_state = (a << 1) | b
     combined = (encoder_state << 2) | current_state
 
-    # Clockwise sequence: 00 -> 10 -> 11 -> 01 -> 00
     if combined == 0b0010 or combined == 0b1011 or combined == 0b1101 or combined == 0b0100:
         encoder_position += 1
-    # Counter-clockwise: 00 -> 01 -> 11 -> 10 -> 00
     elif combined == 0b0001 or combined == 0b0111 or combined == 0b1110 or combined == 0b1000:
         encoder_position -= 1
 
@@ -115,11 +106,9 @@ def read_encoder():
     return encoder_position
 
 def send_volume_up():
-    """Send Volume Up using Consumer Control"""
     cc.send(ConsumerControlCode.VOLUME_INCREMENT)
 
 def send_volume_down():
-    """Send Volume Down using Consumer Control"""
     cc.send(ConsumerControlCode.VOLUME_DECREMENT)
 
 # Variables for switch debouncing
@@ -128,7 +117,7 @@ switch2_pressed = False
 switch3_pressed = False
 encoder_btn_pressed = False
 debounce_time = 0.2
-last_press_time = [0, 0, 0, 0]  # Added one more for encoder button
+last_press_time = [0, 0, 0, 0]
 
 # Variable for encoder position
 last_position = 0
@@ -141,8 +130,10 @@ scroll_speed = 3
 last_track_update = time.monotonic()
 display_update_counter = 0
 
+# Serial buffer for newline-terminated messages
+serial_buffer = ""
+
 def draw_simple_text(text, start_col=0, start_row=0):
-    """Draw text using simple pixel patterns (block letters)"""
     font = {
         ' ': [0x00, 0x00, 0x00, 0x00, 0x00],
         '!': [0x00, 0x00, 0x5F, 0x00, 0x00],
@@ -180,33 +171,49 @@ def draw_simple_text(text, start_col=0, start_row=0):
         'G': [0x3E, 0x41, 0x49, 0x49, 0x7A],
         'H': [0x7F, 0x08, 0x08, 0x08, 0x7F],
         'I': [0x00, 0x41, 0x7F, 0x41, 0x00],
+        'J': [0x20, 0x40, 0x41, 0x3F, 0x01],
+        'K': [0x7F, 0x08, 0x14, 0x22, 0x41],
         'L': [0x7F, 0x40, 0x40, 0x40, 0x40],
         'M': [0x7F, 0x02, 0x0C, 0x02, 0x7F],
         'N': [0x7F, 0x04, 0x08, 0x10, 0x7F],
         'O': [0x3E, 0x41, 0x41, 0x41, 0x3E],
         'P': [0x7F, 0x09, 0x09, 0x09, 0x06],
+        'Q': [0x3E, 0x41, 0x51, 0x21, 0x5E],
         'R': [0x7F, 0x09, 0x19, 0x29, 0x46],
         'S': [0x46, 0x49, 0x49, 0x49, 0x31],
         'T': [0x01, 0x01, 0x7F, 0x01, 0x01],
         'U': [0x3F, 0x40, 0x40, 0x40, 0x3F],
+        'V': [0x1F, 0x20, 0x40, 0x20, 0x1F],
         'W': [0x7F, 0x20, 0x18, 0x20, 0x7F],
+        'X': [0x41, 0x22, 0x1C, 0x22, 0x41],
+        'Y': [0x07, 0x08, 0x70, 0x08, 0x07],
+        'Z': [0x61, 0x51, 0x49, 0x45, 0x43],
         'a': [0x20, 0x54, 0x54, 0x54, 0x78],
+        'b': [0x7F, 0x48, 0x44, 0x44, 0x38],
         'c': [0x38, 0x44, 0x44, 0x44, 0x20],
         'd': [0x38, 0x44, 0x44, 0x48, 0x7F],
         'e': [0x38, 0x54, 0x54, 0x54, 0x18],
+        'f': [0x08, 0x7E, 0x09, 0x01, 0x02],
         'g': [0x0C, 0x52, 0x52, 0x52, 0x3E],
+        'h': [0x7F, 0x08, 0x04, 0x04, 0x78],
         'i': [0x00, 0x44, 0x7D, 0x40, 0x00],
+        'j': [0x20, 0x40, 0x44, 0x3D, 0x00],
         'k': [0x7F, 0x10, 0x28, 0x44, 0x00],
         'l': [0x00, 0x41, 0x7F, 0x40, 0x00],
         'm': [0x7C, 0x04, 0x18, 0x04, 0x78],
         'n': [0x7C, 0x08, 0x04, 0x04, 0x78],
         'o': [0x38, 0x44, 0x44, 0x44, 0x38],
+        'p': [0x7C, 0x14, 0x14, 0x14, 0x08],
+        'q': [0x08, 0x14, 0x14, 0x18, 0x7C],
         'r': [0x7C, 0x08, 0x04, 0x04, 0x08],
         's': [0x48, 0x54, 0x54, 0x54, 0x20],
         't': [0x04, 0x3F, 0x44, 0x40, 0x20],
         'u': [0x3C, 0x40, 0x40, 0x20, 0x7C],
+        'v': [0x1C, 0x20, 0x40, 0x20, 0x1C],
         'w': [0x3C, 0x40, 0x30, 0x40, 0x3C],
+        'x': [0x44, 0x28, 0x10, 0x28, 0x44],
         'y': [0x1C, 0x20, 0x40, 0x20, 0x1C],
+        'z': [0x44, 0x64, 0x54, 0x4C, 0x44],
     }
 
     x = start_col
@@ -220,10 +227,9 @@ def draw_simple_text(text, start_col=0, start_row=0):
                 for row in range(8):
                     if col_data & (1 << row):
                         oled.pixel(x + col_idx, start_row + row, 1)
-        x += 6
+        x += 6  # Always advance, skips unknown chars cleanly
 
 def update_display_simple():
-    """Update display with simple pixel-based text"""
     global scroll_position, scroll_delay, display_update_counter
 
     display_update_counter += 1
@@ -233,31 +239,28 @@ def update_display_simple():
 
     oled.fill(0)
 
-    # Draw title with mode indicator
     if mode == 0:
         draw_simple_text("Music", 0, 0)
     else:
         draw_simple_text("Arrow", 0, 0)
 
-    # Draw scrolling track info
-    max_chars = 20
-    if len(current_track) > max_chars:
-        scroll_delay += 1
-        if scroll_delay >= scroll_speed:
-            scroll_delay = 0
-            scroll_position += 1
-            if scroll_position > len(current_track) - max_chars + 3:
-                scroll_position = 0
+    # Infinite scrolling - text loops continuously without going back
+    scroll_delay += 1
+    if scroll_delay >= scroll_speed:
+        scroll_delay = 0
+        scroll_position += 1
+        # Reset when we've scrolled through the whole text + gap
+        if scroll_position >= len(current_track) + 5:
+            scroll_position = 0
 
-        visible_text = (current_track + "   ")[scroll_position:scroll_position + max_chars]
-        draw_simple_text(visible_text, 0, 18)
-    else:
-        draw_simple_text(current_track[:max_chars], 0, 18)
+    # Build looping text: "song name     song name     ..."
+    looping_text = current_track + "     " + current_track + "     "
+    visible_text = looping_text[scroll_position:scroll_position + 20]
+    draw_simple_text(visible_text, 0, 18)
 
     oled.show()
 
 def update_track_display(text):
-    """Update the track text"""
     global current_track, scroll_position, last_track_update
     if text != current_track:
         current_track = text
@@ -265,15 +268,20 @@ def update_track_display(text):
         last_track_update = time.monotonic()
 
 def read_serial():
-    """Read track info from serial connection"""
+    """Read track info from serial - newline terminated"""
+    global serial_buffer, last_track_update
     if serial and serial.in_waiting > 0:
         try:
             data = serial.read(serial.in_waiting)
             if data:
-                track_info = data.decode('utf-8').strip()
-                if track_info:
-                    update_track_display(track_info)
-                    print(f"Received: {track_info}")
+                serial_buffer += data.decode('utf-8')
+                while '\n' in serial_buffer:
+                    line, serial_buffer = serial_buffer.split('\n', 1)
+                    line = line.strip()
+                    if line:
+                        last_track_update = time.monotonic()  # always reset timer
+                        update_track_display(line)
+                        print(f"Received: {line}")
         except Exception as e:
             print(f"Serial error: {e}")
 
@@ -282,24 +290,20 @@ oled.fill(0)
 oled.show()
 update_display_simple()
 
-# Main loop
 print("Music Pad Ready!")
 print("Mode: Music")
 
 while True:
     current_time = time.monotonic()
 
-    # Read track info from serial
     read_serial()
 
     # Check encoder button for mode switching
     if not encoder_btn.value and not encoder_btn_pressed:
         if current_time - last_press_time[3] > debounce_time:
-            # Toggle mode
-            mode = 1 - mode  # Toggle between 0 and 1
+            mode = 1 - mode
 
-            # Send Enter key only when switching FROM Arrow TO Music mode
-            if mode == 0:  # Switched to Music mode
+            if mode == 0:
                 kbd.send(Keycode.ENTER)
                 print("Enter pressed")
 
@@ -339,40 +343,35 @@ while True:
             last_press_time[2] = current_time
     elif switch3.value:
         switch3_pressed = False
-        
-# Check rotary encoder with improved smoothing
+
+    # Check rotary encoder
     position = read_encoder()
     if position != last_position:
         delta = position - last_position
-        # Act on every 2 pulses for good balance between smoothness and responsiveness
         if abs(delta) >= 2:
-            steps = delta // 0.5  # Every 2 encoder pulses = one action
+            steps = delta // 2
             if mode == 0:  # Music mode
                 if steps > 0:
                     for _ in range(abs(steps)):
-                        send_volume_down()  # Now sends actual Volume Down
-                    print(f"Volume Down ({steps})")
+                        kbd.send(Keycode.SHIFT, Keycode.F22)
+                    print(f"Shift + F22 ({steps})")
                 elif steps < 0:
                     for _ in range(abs(steps)):
-                        send_volume_up()  # Now sends actual Volume Up
-                    print(f"Volume Up ({abs(steps)})")
+                        kbd.send(Keycode.SHIFT, Keycode.F23)
+                    print(f"Shift + F23 ({abs(steps)})")
             else:  # Arrow mode
                 if steps > 0:
-                    # Clockwise = Down arrow
                     for _ in range(abs(steps)):
                         kbd.send(Keycode.DOWN_ARROW)
                     print(f"Down Arrow ({steps})")
                 elif steps < 0:
-                    # Counter-clockwise = Up arrow
                     for _ in range(abs(steps)):
                         kbd.send(Keycode.UP_ARROW)
                     print(f"Up Arrow ({abs(steps)})")
             last_position = position
-    
-    # Update display
+
     update_display_simple()
 
-    # Show "No connection" if no update for 10 seconds
     if current_time - last_track_update > 10 and "Waiting" not in current_track and "Mode" not in current_track:
         update_track_display("No connection")
 
