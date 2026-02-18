@@ -74,4 +74,15 @@ Copy the music_pad_firmware.py firmware to the root of your CIRCUITPY drive
 The board will automatically restart
 You should see "Music Pad" and "Loading..." on the OLED display
 
-## 4. Wait for spotify to unlock the spotify for devs create app button, so i can make app for it.
+## 4. Install Spotify Sender
+
+Download Spotify Sender from programs folder
+Go to https://developer.spotify.com/dashboard and click create app
+Insert whatever name and description you want and in redirect URLs paste this: http://127.0.0.1:8888/callback
+Click Web API and check the terms box then save
+You will get your Client ID and client Secret copy those to the Spotify sender porgram you have downloaded 
+Run the Spotify sender it should open chrome tab authorize it.
+
+## Problems
+
+If you have access denied problem with spotify sender try closing all apps that are using serial port with your RP2040 (for example MU Editor)
